@@ -1,0 +1,22 @@
+{
+    "name": "elite/strowallet-laravel",
+    "description": "Laravel SDK for strowallet",
+    "type": "library",
+    "require": {
+        "illuminate/support": "^12.10",
+        "guzzlehttp/guzzle": "^7.9"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Elite\\StrowalletLaravel\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "elite",
+            "email": "etech.io02@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable"
+}
