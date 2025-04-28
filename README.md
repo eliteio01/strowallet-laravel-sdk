@@ -2,12 +2,9 @@
 # 📦 Strowallet Laravel SDK
 
 ![Packagist Version](https://img.shields.io/packagist/v/elite/strowallet-laravel)
-![Packagist Downloads](https://img.shields.io/packagist/dt/elite/strowallet-laravel)
-![Packagist PHP Version](https://img.shields.io/packagist/php-v/elite/strowallet-laravel)
 ![Packagist License](https://img.shields.io/packagist/l/elite/strowallet-laravel)
 [![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 [![GitHub Issues](https://img.shields.io/github/issues/eliteio01/strowallet-laravel-sdk)](https://github.com/elite/strowallet-laravel-sdk/issues)
-[![GitHub Stars](https://img.shields.io/github/stars/eliteio01/strowallet-laravel-sdk)](https://github.com/eliteio01/strowallet-laravel-sdk/stargazers)
 
 
 A simple, clean, and powerful Laravel package to easily interact with [Strowallet](https://strowallet.com) APIs.

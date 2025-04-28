@@ -3,6 +3,7 @@
 namespace Elite\StrowalletLaravel;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Foundation\AliasLoader;
 
 class StrowalletServiceProvider extends ServiceProvider
 {
@@ -23,11 +24,18 @@ class StrowalletServiceProvider extends ServiceProvider
     /**
      * Bootstrap services.
      */
-    public function boot()
-    {
-        // Publish config file
-        $this->publishes([
-            __DIR__.'/../config/strowallet.php' => config_path('strowallet.php'),
-        ], 'config');
-    }
+
+     public function boot()
+     {
+         $this->publishes([
+             __DIR__.'/../config/strowallet.php' => config_path('strowallet.php'),
+         ], 'strowallet-config'); // use a unique tag
+         
+         if ($this->app->runningInConsole()) {
+             $loader = \Illuminate\Foundation\AliasLoader::getInstance();
+             $loader->alias('Strowallet', \Elite\StrowalletLaravel\StrowalletFacade::class);
+         }
+     }
+     
+    
 }

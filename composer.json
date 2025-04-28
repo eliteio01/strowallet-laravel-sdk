@@ -1,6 +1,6 @@
 {
-    "name": "elite/strowallet-laravel",
-    "description": "Laravel SDK for strowallet",
+    "name": "elite/strowallet-sdk",
+    "description": "A simple SDK for making payments and creating USD virtual cards via the Strowallet API.",
     "type": "library",
     "require": {
         "illuminate/support": "^12.10",
@@ -18,5 +18,16 @@
             "email": "etech.io02@gmail.com"
         }
     ],
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Elite\\StrowalletLaravel\\StrowalletServiceProvider"
+            ],
+            "aliases": {
+                "Strowallet": "Elite\\StrowalletLaravel\\StrowalletFacade"
+            }
+        }
+    }
 }
