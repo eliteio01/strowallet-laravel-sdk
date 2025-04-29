@@ -1,4 +1,4 @@
-# Strowallet Laravel SDK
+# Strowallet SDK
 
 [![Packagist Version](https://img.shields.io/packagist/v/elite/strowallet-laravel)](https://packagist.org/packages/elite/strowallet-laravel)
 [![Packagist License](https://img.shields.io/packagist/l/elite/strowallet-laravel)](https://github.com/eliteio01/strowallet-laravel-sdk/blob/main/LICENSE)
