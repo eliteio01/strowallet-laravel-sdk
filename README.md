@@ -1,142 +1,209 @@
+# Strowallet Laravel SDK
 
-# 📦 Strowallet Laravel SDK
-
-![Packagist Version](https://img.shields.io/packagist/v/elite/strowallet-laravel)
-![Packagist License](https://img.shields.io/packagist/l/elite/strowallet-laravel)
+[![Packagist Version](https://img.shields.io/packagist/v/elite/strowallet-laravel)](https://packagist.org/packages/elite/strowallet-laravel)
+[![Packagist License](https://img.shields.io/packagist/l/elite/strowallet-laravel)](https://github.com/eliteio01/strowallet-laravel-sdk/blob/main/LICENSE)
 [![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
-[![GitHub Issues](https://img.shields.io/github/issues/eliteio01/strowallet-laravel-sdk)](https://github.com/elite/strowallet-laravel-sdk/issues)
+[![GitHub Issues](https://img.shields.io/github/issues/eliteio01/strowallet-laravel-sdk)](https://github.com/eliteio01/strowallet-laravel-sdk/issues)
 
 
-A simple, clean, and powerful Laravel package to easily interact with [Strowallet](https://strowallet.com) APIs.
+A comprehensive Laravel package for integrating with Strowallet's payment services including virtual cards, wallet transfers, and bank operations.
+
 
 ---
 
-## ✨ Features
+## Table of Contents
+- [Features](#features)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+  - [Card Service](#card-service)
+  - [Wallet Service](#wallet-service)
+  - [Bank Service](#bank-service)
+- [Examples](#examples)
+- [Extending](#extending)
+- [Testing](#testing)
+- [License](#license)
+- [Credits](#credits)
 
-- Easy integration with Strowallet API
-- Configurable API keys and endpoints
-- Ready to use with Laravel's Service Container
-- Supports publishing configuration file
-- Built on top of Laravel HTTP Client
 
 ---
 
-## 📥 Installation
 
-You can install the package via Composer:
+## Features
+- Complete virtual card management
+- Wallet-to-wallet transfers
+- Bank account verification and transfers
+- Easy Laravel integration
+- Comprehensive error handling
+- Well-documented methods
 
-```bash
-composer require elite/strowallet-laravel
+
+---
+
+## Installation
+
+Install via Composer:
+
+```php
+composer require elite/strowallet-sdk
+
 ```
 
----
 
-## ⚙️ Configuration
-
-After installing, publish the configuration file:
-
-```bash
-php artisan vendor:publish --tag=config --provider="Elite\StrowalletLaravel\StrowalletServiceProvider"
-```
-
-This will create a `config/strowallet.php` file.
-
-Set your `.env` variables:
+Configure your `.env`:
 
 ```dotenv
 STROWALLET_BASE_URL=https://strowallet.com/api
-STROWALLET_API_KEY=your-api-key-here
+STROWALLET_API_KEY=your_api_key_here
 ```
 
----
+## Usage
 
-## 🚀 Usage
-
-Inject the `Strowallet` class into your services or controllers:
+### Card Service
 
 ```php
-use Elite\StrowalletLaravel\Strowallet;
+$strowallet->card()->createCardUser([
+    'firstName' => 'John',
+    'lastName' => 'Doe',
+    // ... all required fields
+]);
 
-class WalletController extends Controller
+$strowallet->card()->createCard([
+    'name_on_card' => 'John Doe',
+    'card_type' => 'visa',
+    'amount' => '100.00',
+    'customerEmail' => 'john@example.com'
+]);
+```
+
+Available Card Methods:
+- `createCardUser()` - Register new cardholder
+- `updateCardHolder()` - Update cardholder details
+- `getCardHolder()` - Get cardholder info
+- `createCard()` - Issue virtual card
+- `fundCard()` - Add funds to card
+- `getCardDetails()` - View card details
+- `cardAction()` - Freeze/unfreeze card
+- `withdrawCard()` - Withdraw from card
+- `getCardTransactions()` - View transactions
+- `createGiftCard()` - Create gift card
+
+### Wallet Service
+
+```php
+$strowallet->wallet()->transfer(
+    amount: '100.00',
+    currency: 'NGN',
+    receiver: 'recipient@example.com',
+    note: 'Payment for services'
+);
+```
+
+### Bank Service
+
+```php
+// Get bank list
+$banks = $strowallet->bank()->getBankList();
+
+// Verify account
+$account = $strowallet->bank()->getBankName(
+    bankCode: '000013', // GTB
+    accountNumber: '0123456789'
+);
+
+// Transfer funds
+$transfer = $strowallet->bank()->bankTransfer(
+    amount: '5000.00',
+    bankCode: '058',
+    accountNumber: '0123456789',
+    narration: 'Salary payment',
+    nameEnquiryRef: 'REF123456'
+);
+```
+
+## Examples
+
+### Complete Card Creation Flow
+
+```php
+// 1. Create card user
+$user = $strowallet->card()->createCardUser([
+    'firstName' => 'John',
+    'lastName' => 'Doe',
+    // ... all required fields
+]);
+
+// 2. Create virtual card
+$card = $strowallet->card()->createCard([
+    'name_on_card' => 'John Doe',
+    'card_type' => 'visa',
+    'amount' => '100.00',
+    'customerEmail' => 'john@example.com'
+]);
+
+// 3. Fund the card
+$fund = $strowallet->card()->fundCard([
+    'card_id' => $card['id'],
+    'amount' => '50.00'
+]);
+```
+---
+
+## Extending
+
+To add new functionality:
+
+1. Create a new method in the appropriate service class
+2. Use the HTTP client to make requests:
+
+```php
+public function newMethod(array $data): Collection
 {
-    public function balance(Strowallet $strowallet)
-    {
-        $balance = $strowallet->getWalletBalance();
-        return response()->json($balance);
-    }
+    return $this->client->post('/new-endpoint', $data);
 }
 ```
-
-Or if you have a Facade (optional):
-
-```php
-use Strowallet;
-
-$balance = Strowallet::getWalletBalance();
-```
-
 ---
 
-## 📚 Available Methods
+## Testing
 
-| Method                    | Description                            |
-|----------------------------|----------------------------------------|
-| `getWalletBalance()`       | Fetch the current wallet balance       |
-| *(More methods coming soon)* | Extend the SDK as needed!              |
-
----
-
-## 🛠️ Extending
-
-You can easily extend the `Strowallet` class to add more API endpoints such as:
-
-- Sending Money
-- Viewing Transactions
-- Creating Virtual Accounts
-- Managing Cards
-- etc.
-
-Pull requests are welcome! 🎉
-
----
-
-## 🧹 Testing
-
-To run tests:
+Run the test suite:
 
 ```bash
 composer test
 ```
-
 (Testing suite coming soon!)
 
 ---
 
-## 📝 License
+## License
 
-This package is open-sourced software licensed under the [MIT license](LICENSE).
+This package is open-source software licensed under the [MIT license](LICENSE).
 
----
-
-# 🚀 Quick Start
-
-```bash
-composer require elite/strowallet-laravel
-php artisan vendor:publish --tag=config
-```
-
-And you're ready to go! 🎯
-
----
-
-# 📣 Contributing
+## 📣 Contributing
 
 Contributions, issues, and feature requests are very welcome!  
 Feel free to open a pull request or submit an issue.
 
+## 📬 Credits
+
+- Developed by [Elite](https://github.com/eliteio01)
+- Strowallet API by [Strowallet](https://strowallet.com)
+```
+
 ---
 
-# 📬 Credits
+This README includes:
 
-- Developed by [Elite](https://github.com/eliteio01)  
-- Strowallet API powered by [Strowallet](https://strowallet.com)
+1. All the services and methods from your implementation
+2. Clear usage examples
+3. Proper badge links
+4. Table of contents for easy navigation
+5. Complete installation and configuration instructions
+6. Practical code examples
+7. Extension guidelines
+8. License and contribution information
+
+
+---
+
+The formatting follows standard Markdown syntax and includes all the necessary sections for a comprehensive package documentation.
