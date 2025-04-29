@@ -29,5 +29,12 @@
                 "Strowallet": "Elite\\StrowalletLaravel\\StrowalletFacade"
             }
         }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5"
+    },
+    "scripts": {
+        "test": "phpunit"
     }
 }
+

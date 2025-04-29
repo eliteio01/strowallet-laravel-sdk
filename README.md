@@ -1,63 +1,103 @@
-# Strowallet SDK
+# Strowallet Laravel SDK
 
-[![Packagist Version](https://img.shields.io/packagist/v/elite/strowallet-laravel)](https://packagist.org/packages/elite/strowallet-laravel)
-[![Packagist License](https://img.shields.io/packagist/l/elite/strowallet-laravel)](https://github.com/eliteio01/strowallet-laravel-sdk/blob/main/LICENSE)
+[![Packagist Version](https://img.shields.io/packagist/v/elite/strowallet-sdk)](https://packagist.org/packages/elite/strowallet-laravel)
+[![Packagist License](https://img.shields.io/packagist/l/elite/strowallet-sdk)](https://github.com/eliteio01/strowallet-laravel-sdk/blob/main/LICENSE)
 [![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 [![GitHub Issues](https://img.shields.io/github/issues/eliteio01/strowallet-laravel-sdk)](https://github.com/eliteio01/strowallet-laravel-sdk/issues)
 
-
-A comprehensive Laravel package for integrating with Strowallet's payment services including virtual cards, wallet transfers, and bank operations.
-
+A clean and developer-friendly Laravel SDK for interacting with [Strowallet](https://strowallet.com), supporting virtual cards, wallet transfers, and bank transactions with ease.
 
 ---
 
-## Table of Contents
-- [Features](#features)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Usage](#usage)
-  - [Card Service](#card-service)
-  - [Wallet Service](#wallet-service)
-  - [Bank Service](#bank-service)
-- [Examples](#examples)
-- [Extending](#extending)
-- [Testing](#testing)
-- [License](#license)
-- [Credits](#credits)
+## 📚 Table of Contents
 
-
----
-
-
-## Features
-- Complete virtual card management
-- Wallet-to-wallet transfers
-- Bank account verification and transfers
-- Easy Laravel integration
-- Comprehensive error handling
-- Well-documented methods
-
+- [✨ Features](#-features)  
+- [📦 Installation](#-installation)  
+- [⚙️ Configuration](#-configuration)  
+- [🚀 Usage](#-usage)  
+  - [Card Service](#card-service)  
+  - [Wallet Service](#wallet-service)  
+  - [Bank Service](#bank-service)  
+- [💡 Examples](#-examples)  
+- [🧹 Extending](#-extending)  
+- [🧪 Testing](#-testing)  
+- [📄 License](#-license)  
+- [🤝 Contributing](#-contributing)  
+- [🙌 Credits](#-credits)
 
 ---
 
-## Installation
+## ✨ Features
+
+- 🔐 Virtual card issuance and management  
+- 💸 Wallet-to-wallet transfers  
+- 🏦 Bank verification and transfers  
+- ⚙️ Simple Laravel service-based architecture  
+- ✅ Built-in request validation and error handling  
+- 📘 Clean, readable, and extendable codebase
+
+---
+
+## 📦 Installation
 
 Install via Composer:
 
-```php
-composer require elite/strowallet-sdk
-
+```bash
+composer require elite/strowallet-laravel
 ```
 
+---
 
-Configure your `.env`:
+## ⚙️ Configuration
+
+Add the following to your `.env` file:
 
 ```dotenv
 STROWALLET_BASE_URL=https://strowallet.com/api
-STROWALLET_API_KEY=your_api_key_here
+STROWALLET_API_KEY=your_pub_key_here
 ```
 
-## Usage
+---
+
+## 🚀 Usage
+
+You can access services in two ways:
+
+### ✅ Via Facade (Recommended)
+
+```php
+use Elite\StrowalletLaravel\Facades\Strowallet as StrowalletFacade;
+
+// Get list of banks
+$banks = StrowalletFacade::bank()->getBankList();
+
+// Perform bank transfer
+$response = StrowalletFacade::bank()->bankTransfer(
+    amount: '50000',
+    bankCode: '058',
+    accountNumber: '0123456789',
+    narration: 'Transfer for invoice',
+    nameEnquiryRef: 'ref123456',
+    senderName: 'Elite Corp'
+);
+```
+
+### ✅ Via Dependency Injection
+
+```php
+
+use Elite\StrowalletLaravel\Strowallet;
+
+class WalletController extends Controller
+{
+    public function showBalance(Strowallet $strowallet)
+    {
+        $balance = $strowallet->wallet()->getWalletBalance();
+        return response()->json($balance);
+    }
+}
+
+```
 
 ### Card Service
 
@@ -65,7 +105,7 @@ STROWALLET_API_KEY=your_api_key_here
 $strowallet->card()->createCardUser([
     'firstName' => 'John',
     'lastName' => 'Doe',
-    // ... all required fields
+    // ... additional fields
 ]);
 
 $strowallet->card()->createCard([
@@ -76,42 +116,47 @@ $strowallet->card()->createCard([
 ]);
 ```
 
-Available Card Methods:
-- `createCardUser()` - Register new cardholder
-- `updateCardHolder()` - Update cardholder details
-- `getCardHolder()` - Get cardholder info
-- `createCard()` - Issue virtual card
-- `fundCard()` - Add funds to card
-- `getCardDetails()` - View card details
-- `cardAction()` - Freeze/unfreeze card
-- `withdrawCard()` - Withdraw from card
-- `getCardTransactions()` - View transactions
-- `createGiftCard()` - Create gift card
+#### Available Card Methods
+
+- `createCardUser(array $data)`
+- `updateCardHolder(array $data)`
+- `getCardHolder(string $customerEmail)`
+- `createCard(array $data)`
+- `fundCard(array $data)`
+- `getCardDetails(string $cardId)`
+- `cardAction(string $cardId, string $action)` — *freeze/unfreeze*
+- `withdrawCard(array $data)`
+- `getCardTransactions(string $cardId)`
+- `createGiftCard(array $data)`
+
+---
 
 ### Wallet Service
 
 ```php
 $strowallet->wallet()->transfer(
     amount: '100.00',
-    currency: 'NGN',
+    currency: 'USD',
     receiver: 'recipient@example.com',
     note: 'Payment for services'
 );
 ```
 
+---
+
 ### Bank Service
 
 ```php
-// Get bank list
+// Fetch list of supported banks
 $banks = $strowallet->bank()->getBankList();
 
-// Verify account
+// Verify bank account
 $account = $strowallet->bank()->getBankName(
-    bankCode: '000013', // GTB
+    bankCode: '000013',
     accountNumber: '0123456789'
 );
 
-// Transfer funds
+// Initiate transfer
 $transfer = $strowallet->bank()->bankTransfer(
     amount: '5000.00',
     bankCode: '058',
@@ -121,19 +166,21 @@ $transfer = $strowallet->bank()->bankTransfer(
 );
 ```
 
-## Examples
+---
 
-### Complete Card Creation Flow
+## 💡 Examples
+
+### Full Virtual Card Flow
 
 ```php
-// 1. Create card user
+// Step 1: Create user
 $user = $strowallet->card()->createCardUser([
     'firstName' => 'John',
     'lastName' => 'Doe',
-    // ... all required fields
+    // required fields...
 ]);
 
-// 2. Create virtual card
+// Step 2: Create virtual card
 $card = $strowallet->card()->createCard([
     'name_on_card' => 'John Doe',
     'card_type' => 'visa',
@@ -141,20 +188,18 @@ $card = $strowallet->card()->createCard([
     'customerEmail' => 'john@example.com'
 ]);
 
-// 3. Fund the card
+// Step 3: Fund card
 $fund = $strowallet->card()->fundCard([
     'card_id' => $card['id'],
     'amount' => '50.00'
 ]);
 ```
+
 ---
 
-## Extending
+## 🧹 Extending
 
-To add new functionality:
-
-1. Create a new method in the appropriate service class
-2. Use the HTTP client to make requests:
+You can easily add custom methods to the SDK:
 
 ```php
 public function newMethod(array $data): Collection
@@ -162,48 +207,38 @@ public function newMethod(array $data): Collection
     return $this->client->post('/new-endpoint', $data);
 }
 ```
+
+Just define your method in the appropriate service class (`CardService`, `WalletService`, etc.).
+
 ---
 
-## Testing
+## 🧪 Testing
 
-Run the test suite:
+Coming soon. The test suite will be available to ensure SDK stability and easy contribution.
+
+In the meantime, you can run:
 
 ```bash
 composer test
 ```
-(Testing suite coming soon!)
 
 ---
 
-## License
+## 📄 License
 
 This package is open-source software licensed under the [MIT license](LICENSE).
 
-## 📣 Contributing
+---
 
-Contributions, issues, and feature requests are very welcome!  
-Feel free to open a pull request or submit an issue.
+## 🤝 Contributing
 
-## 📬 Credits
-
-- Developed by [Elite](https://github.com/eliteio01)
-- Strowallet API by [Strowallet](https://strowallet.com)
-```
+We welcome all contributions!  
+Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on submitting issues, feature requests, and pull requests.
 
 ---
 
-This README includes:
+## 🙌 Credits
 
-1. All the services and methods from your implementation
-2. Clear usage examples
-3. Proper badge links
-4. Table of contents for easy navigation
-5. Complete installation and configuration instructions
-6. Practical code examples
-7. Extension guidelines
-8. License and contribution information
+- Developed by [Elite](https://github.com/eliteio01)  
+- Powered by [Strowallet](https://strowallet.com)
 
-
----
-
-The formatting follows standard Markdown syntax and includes all the necessary sections for a comprehensive package documentation.
