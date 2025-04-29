@@ -1,6 +1,6 @@
 # Strowallet Laravel SDK
 
-[![Packagist Version](https://img.shields.io/packagist/v/elite/strowallet-sdk)](https://packagist.org/packages/elite/strowallet-laravel)
+[![Packagist Version](https://img.shields.io/packagist/v/elite/strowallet-sdk)](https://packagist.org/packages/elite/strowallet-sdk)
 [![Packagist License](https://img.shields.io/packagist/l/elite/strowallet-sdk)](https://github.com/eliteio01/strowallet-laravel-sdk/blob/main/LICENSE)
 [![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 [![GitHub Issues](https://img.shields.io/github/issues/eliteio01/strowallet-laravel-sdk)](https://github.com/eliteio01/strowallet-laravel-sdk/issues)
