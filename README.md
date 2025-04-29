@@ -43,7 +43,7 @@ A clean and developer-friendly Laravel SDK for interacting with [Strowallet](htt
 Install via Composer:
 
 ```bash
-composer require elite/strowallet-laravel
+composer require elite/strowallet-sdk
 ```
 
 ---
